@@ -54,7 +54,7 @@ console.log(name,age,"value")
 
 
 //closure - closure is a function along with its lexical scope bundled together.as in when this function is called some where outer scope it still remembers the outer lexical environment where it was originally present in the code.
-
+//it is a concept in javascript where an inner function is lexically bound to its lexical environment as in the inner function has the reference to the outer function variable if the variable are used inside the inner function
 function outer(){
     let x=0
     function inner(){
@@ -100,3 +100,79 @@ deepCopyObj.address.city = "Patna"
 
 console.log(deepCopyObj.name,newObj.name)
 console.log(deepCopyObj.address.city,newObj.address.city)
+
+//Clouser related practical type questions:
+//1. Module pattern in closure
+//2. memoised function
+//3. once function in js
+
+// ONCE Function - fn that execute only once even called more then once
+
+function once(fn){
+    let executed = false
+    return function(...args){
+        if(!executed){
+            executed= true;
+            return fn(...args)
+        }
+        return undefined
+    }
+}
+ 
+const initialize = once(()=> {return "initialised"})
+console.log(initialize())
+console.log(initialize())
+
+
+// MEMOISE FUNCTION
+
+function memoised(fn){
+    let context = {}
+    return function(...args){
+        if(context[args]){
+            console.log("cache")
+            return context[args]
+        }
+        console.log("here",context)
+        const result = fn(...args)
+        context[args] =  result
+        return result
+
+    }
+}
+
+const add = (x,y) => { return x+y}
+const addResult = memoised(add)
+console.log(addResult(2,3))
+console.log(addResult(2,3))
+
+
+//MODULE PATTERN IN JSb is basically the combination of immediately invoked function and closure.
+//and variable/method defined there is private and can not be accessed out side the function
+
+const CounterModule = (function(){
+    let count = 1;
+    function logCurrent(){
+        return `current ${count}`;
+    }
+
+    return {
+        increment: function(){
+            count++;
+            return logCurrent()
+        },
+        decrement: function(){
+            count--;
+            return logCurrent()
+        },
+        reset: function(){
+            count = 0;
+            return logCurrent()
+        }
+    }
+})();
+
+console.log(CounterModule.increment())
+console.log(CounterModule.decrement())
+console.log(CounterModule.reset())
+
