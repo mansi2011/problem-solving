@@ -147,7 +147,7 @@ console.log(addResult(2,3))
 console.log(addResult(2,3))
 
 
-//MODULE PATTERN IN JSb is basically the combination of immediately invoked function and closure.
+//MODULE PATTERN IN JS is basically the combination of immediately invoked function and closure.
 //and variable/method defined there is private and can not be accessed out side the function
 
 const CounterModule = (function(){
@@ -175,4 +175,68 @@ const CounterModule = (function(){
 console.log(CounterModule.increment())
 console.log(CounterModule.decrement())
 console.log(CounterModule.reset())
+
+function counter(){
+    let num =0;
+    function increment(){
+        return num++
+    }
+    return increment
+}
+
+const res = counter()
+console.log(res())
+console.log(res())
+console.log(res())
+
+let arr = [1,2,3,4,5]
+Array.prototype.myMap = function(callback){
+    let temp = [];
+    for(let i=0;i<=this.length-1;i++){
+        temp.push(callback(this[i],i,this))
+    }
+    return temp
+}
+
+const newArr = arr.myMap((i) => {  return i })
+console.log(newArr)
+
+
+
+const obj = {
+    name:"Mansi"
+}
+
+function getFullName(lastname) {
+    return `firstname : ${this.name} and lastName: ${lastname}`
+}
+
+Function.prototype.myBind = function(context ={},...args){
+    if(typeof this !== "function"){
+        throw new Error("can not be bounded")
+    }
+    context.fn = this;
+    return function(...newargs) {
+        return context.fn(...args,...newargs)
+    }
+}
+
+console.log(getFullName.myBind(obj)('Srivastava'))
+// console.log(result("Srivastava"))
+
+
+function outer(){
+    let x
+    function closure(x){
+        setTimeout(()=>{
+            console.log(x)
+        },x*1000)
+    }
+    
+    for(var i=0; i<=5; i++){
+        closure(i)
+    }
+}
+
+outer()
 
