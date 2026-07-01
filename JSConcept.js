@@ -65,7 +65,7 @@ function outer(){
 }
 
 const call = outer()
-console.log(call())
+// console.log(call())
 
 // shallow copy -- it is a way where we can copy object and array properties in new variable but it only copy the top level values also both point to same reference.
 
@@ -203,7 +203,7 @@ console.log(newArr)
 
 
 
-const obj = {
+const objm = {
     name:"Mansi"
 }
 
@@ -221,22 +221,121 @@ Function.prototype.myBind = function(context ={},...args){
     }
 }
 
-console.log(getFullName.myBind(obj)('Srivastava'))
+console.log(getFullName.myBind(objm)('Srivastava'))
 // console.log(result("Srivastava"))
 
 
-function outer(){
-    let x
+// function outer(){
+    for(var i=0; i<=5; i++){
+
     function closure(x){
         setTimeout(()=>{
             console.log(x)
         },x*1000)
     }
+
     
-    for(var i=0; i<=5; i++){
         closure(i)
+}
+// }
+
+// outer()
+
+
+Array.prototype.myFilter = function(callback){
+    let filterArray = []
+    for(let i=0; i<=this.length -1 ; i++){
+        if(callback(this[i],i,this)){
+            filterArray.push(callback(this[i]))
+        }
+    }
+    return filterArray
+}
+
+const filterResult = arr.myFilter((item) => { if(item%2 === 0){
+    return item
+}})
+console.log(filterResult,"filterResult")
+
+Array.prototype.myReduce = function(callback,intialValue){
+    let startIndex = 0;
+    let accumulator;
+    if(intialValue !== undefined){
+        accumulator = intialValue
+    }else{
+        accumulator = this[startIndex];
+        startIndex = 1
+    }
+
+    for(let i=0; i<=this.length-1; i++){
+        accumulator = callback(accumulator,this[i],i,this)
+    }
+    return accumulator
+}
+
+
+console.log(arr.myReduce((accumulator,current) => {return accumulator+current},0 ))
+
+
+function debounce(fn,delay){
+    let timer;
+    return function(...args){
+        clearTimeout(timer)
+        timer = setTimeout(()=>{
+            fn(...args)
+        },delay)
     }
 }
 
-outer()
 
+function throttle(fn,delay){
+    let lastTime = 0;
+    return function(...args){
+        setTimeout(() => {
+            if(Date.now()-lastTime>=delay){
+                fn(...args)
+                lastTime=Date.now()
+            }
+        },delay)
+    }
+
+}
+
+
+function createBase(num){
+    return function(n){
+        return num+n
+    }
+}
+var addSix = createBase(6)
+console.log(addSix(10))
+console.log(addSix(21))
+
+
+const computeAmount = (function(){
+    let amount = 0
+    
+    return{
+        
+        lacs : function lacs(a){
+         amount+=a*100000
+         return this
+        },
+        crore: function crore(b){
+            amount+=b*10000000
+            return this
+        },
+        thousand: function thousand(c){
+             amount+=c*1000
+             return this
+        },
+        value: function value(){
+            return amount
+        }
+    }
+})()
+
+
+
+const value = computeAmount.lacs(15).crore(5).crore(2).lacs(20).thousand(45).crore(7).value()
+console.log(value)
